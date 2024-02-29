@@ -35,8 +35,12 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         ignoredPaths: ["tableApi"],
-        ignoredActionPaths: ["payload.birthday"],
-        ignoredActionPaths: ["meta.baseQueryMeta.request"],
+        ignoredActionPaths: [
+          "payload.entry.birthday",
+          "meta.baseQueryMeta.request",
+          "meta.baseQueryMeta.response",
+          "meta.arg.originalArgs.entry.birthday",
+        ],
       },
     }).concat(tableApi.middleware),
 });

@@ -1,3 +1,4 @@
+'use client'
 import { TextField, ThemeProvider, createTheme } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -15,12 +16,16 @@ export default function DateComponent({ value, onChange }) {
       },
     },
   });
+
+  const handleDateChange = (date) => {
+    onChange(date ? date.toISOString() : '');
+  };
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           value={value}
-          onChange={onChange}
+          onChange={handleDateChange}
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>

@@ -145,12 +145,18 @@ export default function UsersTable() {
   }, [tableData, persistedTableData, persistedErrors]);
 
   const handleUserDataChange = (index, field, value) => {
-    const updatedValue =
-      field === "firstName" || field === "lastName"
-        ? capitalizeFirstLetter(value)
-        : value;
+    let updatedValue = value;
 
-    const isValid = validateField(field, value);
+    if (field === "firstName" || field === "lastName") {
+      updatedValue = capitalizeFirstLetter(value);
+    }
+
+    if (field === "birthday") {
+      const date = dayjs(value);
+      updatedValue = date.isValid() ? date.toISOString() : "";
+    }
+
+    const isValid = validateField(field, updatedValue);
 
     dispatch(setFieldError({ index, field, error: !isValid }));
 
@@ -164,22 +170,33 @@ export default function UsersTable() {
       updateTableData({ rowId: updatedEntry.rowId, entry: updatedEntry })
     );
 
-    if (!isValid) {
-      // console.log("validation error");
-    } else {
+    if (isValid) {
       debouncedSaveData(updatedEntry.rowId, updatedEntry);
+    } else {
+      console.log("validate error");
     }
   };
 
   if (tableDataIsLoading) {
-    return <Stack direction="row" justifyContent="center">Loading...</Stack>;
+    return (
+      <Stack direction="row" justifyContent="center">
+        Loading...
+      </Stack>
+    );
   }
 
   if (tableError) {
-    return <Stack direction="row" justifyContent="center">Error: {tableError.message}</Stack>;
+    return (
+      <Stack direction="row" justifyContent="center">
+        Error: {tableError.message}
+      </Stack>
+    );
   }
   return (
-    <TableContainer component={Paper} style={{ maxWidth: '1000px', margin: '0 auto'}}>
+    <TableContainer
+      component={Paper}
+      style={{ maxWidth: "1000px", margin: "0 auto" }}
+    >
       <Table>
         <TableHead>
           <TableRow>
